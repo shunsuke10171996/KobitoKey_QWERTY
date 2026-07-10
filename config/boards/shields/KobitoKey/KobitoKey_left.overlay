@@ -61,14 +61,6 @@
         rotation-angle = <24>;
     };
 
-    /* 倍速用スケーラー */
-    zip_speed_double: zip_speed_double {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-        type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_X INPUT_REL_Y>;
-    };
-
     /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
     zip_aml: zip_aml {
         compatible = "zmk,input-processor-temp-layer";
@@ -91,6 +83,8 @@
     input-processors =
         <&sensor_rotation_left>,
         <&zip_aml 1 640>, 
+        /* レイヤー3のときは横スクロール（縦方向を0倍にカット）、それ以外は通常の縦横スクロール */
+        <&zip_xy_scaler_with_layers 3 1 1 0 1>,
         <&zip_xy_to_scroll_mapper>, 
         <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
         <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>; 
@@ -100,5 +94,9 @@
     status = "okay";
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_aml 1 640>; 
+        <&zip_aml 1 640>,
+        /* レイヤー2のときは速度倍化（2倍）、それ以外は通常（1倍） */
+        <&zip_xy_scaler_with_layers 2 2 1 2 1>,
+        /* レイヤー3のときはスクロール、それ以外は通常のカーソル移動 */
+        <&zip_xy_to_scroll_mapper_with_layers 3>;
 };
