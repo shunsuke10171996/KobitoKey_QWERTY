@@ -61,7 +61,7 @@
         rotation-angle = <24>;
     };
 
-    /* 倍速用スケーラー (レイヤー2・3用) */
+    /* 倍速用スケーラー */
     zip_speed_double: zip_speed_double {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
@@ -101,53 +101,4 @@
     input-processors =
         <&sensor_rotation_right>,
         <&zip_aml 1 640>; 
-};
-
-/* ==========================================================================
-   LAYER 2 用の Listener (右トラックボール速度倍化)
-   ========================================================================= */
-/ {
-    tb_left_l2: tb_left_l2 {
-        compatible = "zmk,input-listener";
-        device = <&tb_left>; /* 必須プロパティ */
-        input-processors =
-            <&sensor_rotation_left>,
-            <&zip_xy_to_scroll_mapper>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
-
-    tb_right_l2: tb_right_l2 {
-        compatible = "zmk,input-listener";
-        device = <&tb_right_split>; /* ★エラー原因：右側デバイスの明示を追加 */
-        input-processors =
-            <&sensor_rotation_right>,
-            <&zip_speed_double 2 1>; 
-    };
-};
-
-/* ==========================================================================
-   LAYER 3 用の Listener (左:横スクロール、右:自由スクロール)
-   ========================================================================== */
-/ {
-    tb_left_l3: tb_left_l3 {
-        compatible = "zmk,input-listener";
-        device = <&tb_left>; /* 必須プロパティ */
-        input-processors =
-            <&sensor_rotation_left>,
-            <&zip_xy_to_scroll_mapper>,
-            <&zip_speed_double 1 1>,
-            <&zip_speed_double 0 1>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
-    };
-
-    tb_right_l3: tb_right_l3 {
-        compatible = "zmk,input-listener";
-        device = <&tb_right_split>; /* ★エラー原因：右側デバイスの明示を追加 */
-        input-processors =
-            <&sensor_rotation_right>,
-            <&zip_xy_to_scroll_mapper>, 
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
 };
