@@ -58,6 +58,52 @@
 
 &caps_word { continue-list = <UNDERSCORE BACKSPACE DELETE JP_UNDER>; };
 
+/* ==========================================================================
+   左右共通で参照されるカスタムリスナーの定義
+   ========================================================================== */
+/ {
+    /* LAYER 2 用リスナー */
+    tb_left_l2: tb_left_l2 {
+        compatible = "zmk,input-listener";
+        device = <&tb_left>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+
+    tb_right_l2: tb_right_l2 {
+        compatible = "zmk,input-listener";
+        device = <&tb_right_split>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_speed_double 2 1>; 
+    };
+
+    /* LAYER 3 用リスナー */
+    tb_left_l3: tb_left_l3 {
+        compatible = "zmk,input-listener";
+        device = <&tb_left>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_speed_double 1 1>,
+            <&zip_speed_double 0 1>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+    };
+
+    tb_right_l3: tb_right_l3 {
+        compatible = "zmk,input-listener";
+        device = <&tb_right_split>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_xy_to_scroll_mapper>, 
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+};
+
 / {
     /* 40キー（横10列）のマトリックスに合わせてkey-positionsを定義 */
     combos {
@@ -324,7 +370,6 @@
         };
 
         layer_2 {
-            /* レイヤー2での動的リスナー割り当て */
             ib-listeners = <&tb_left_l2 &tb_right_l2>;
 
             bindings = <
@@ -336,7 +381,6 @@
         };
 
         layer_3 {
-            /* レイヤー3での動的リスナー割り当て */
             ib-listeners = <&tb_left_l3 &tb_right_l3>;
 
             bindings = <
