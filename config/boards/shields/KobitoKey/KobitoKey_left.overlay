@@ -37,7 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <200>; /* デフォルト感度 */
+        cpi = <600>; /* ★改善策：左センサーの物理感度を 200 ➔ 600 に引き上げ */
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
@@ -61,19 +61,19 @@
         rotation-angle = <24>;
     };
 
-    /* ★新規追加：スクロールをフラットにするための逆回転プロセッサ */
+    /* スクロールをフラットにするための逆回転プロセッサ */
     unrotate_left: unrotate_left {
         compatible = "zmk,input-processor-sensor-rotation";
         status = "okay";
         #input-processor-cells = <0>;
-        rotation-angle = <24>; /* 左の-24°を打ち消すために+24°回転 */
+        rotation-angle = <24>;
     };
 
     unrotate_right: unrotate_right {
         compatible = "zmk,input-processor-sensor-rotation";
         status = "okay";
         #input-processor-cells = <0>;
-        rotation-angle = <(-24)>; /* 右の+24°を打ち消すために-24°回転 */
+        rotation-angle = <(-24)>;
     };
 
     /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
@@ -114,7 +114,7 @@
     input-processors =
         <&sensor_rotation_left>,
         <&zip_aml 1 640>, 
-        <&unrotate_left>, /* ★変更点：スクロール変換の直前に逆回転を挟んでフラット化 */
+        <&unrotate_left>, 
         <&zip_xy_to_scroll_mapper>, 
         <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
         <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
@@ -128,8 +128,9 @@
         input-processors =
             <&sensor_rotation_left>,
             <&zip_aml 1 640>,
-            <&unrotate_left>, /* ★変更点：スクロール変換の直前に逆回転を挟んでフラット化 */
+            <&unrotate_left>, 
             <&zip_xy_to_scroll_mapper>,
+            /* ★修正：横スクロールを逆にするため INPUT_TRANSFORM_X_INVERT を再追加 */
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             /* レイヤー3左設定: 縦を0倍（カット）にし、横を1/4倍速にする */
@@ -162,7 +163,7 @@
         input-processors =
             <&sensor_rotation_right>,
             <&zip_aml 1 640>,
-            <&unrotate_right>, /* ★変更点：スクロール変換の直前に逆回転を挟んでフラット化 */
+            <&unrotate_right>, 
             <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
