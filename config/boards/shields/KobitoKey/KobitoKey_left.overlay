@@ -67,6 +67,14 @@
         #input-processor-cells = <2>;
         require-prior-idle-ms = <350>;
     };
+
+    /* スクロール減速用スケーラー (1/2倍速にする) */
+    zip_scroll_scaler: zip_scroll_scaler {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_HWHEEL INPUT_REL_WHEEL>; /* スクロール軸を対象に指定 */
+    };
 };
 
 &zip_aml {
@@ -85,7 +93,8 @@
         <&zip_aml 1 640>, 
         <&zip_xy_to_scroll_mapper>, 
         <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_scroll_scaler 1 2>; /* ★スクロール速度を半分にする */
 
     /* レイヤー3のときは縦方向（Y）を0倍にして横スクロールのみにする */
     horiz_scroll {
@@ -94,9 +103,9 @@
             <&sensor_rotation_left>,
             <&zip_aml 1 640>,
             <&zip_xy_to_scroll_mapper>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-            /* Y方向のスクロールを0倍にしてカット */
-            <&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)>;
+            /* ★横スクロールが逆だったため、X_INVERT を外して方向を反転 */
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_scroll_scaler 1 2>; /* 横スクロールも速度を半分に */
     };
 };
 
@@ -125,7 +134,9 @@
             <&sensor_rotation_right>,
             <&zip_aml 1 640>,
             <&zip_xy_to_scroll_mapper>,
+            /* ★修正：スクロール化された後のイベントなので、scroll_transformを適用 */
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_scroll_scaler 1 2>; /* 右の自由スクロールも速度を半分にする */
     };
 };
