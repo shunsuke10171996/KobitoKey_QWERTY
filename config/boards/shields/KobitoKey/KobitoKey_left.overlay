@@ -37,8 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <200>; /* センサー感度 */
-
+        cpi = <200>; /* デフォルト感度 */
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
@@ -47,6 +46,7 @@
 };
 
 / {
+    /* 回転補正 */
     sensor_rotation_left: sensor-rotation-left {
         compatible = "zmk,input-processor-sensor-rotation";
         status = "okay";
@@ -60,45 +60,91 @@
         status = "okay";
         rotation-angle = <24>;
     };
+
+    /* 倍速用スケーラー (レイヤー2用) */
+    zip_speed_double: zip_speed_double {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+    };
+
+    /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
+    zip_aml: zip_aml {
+        compatible = "zmk,input-processor-temp-layer";
+        #input-processor-cells = <2>;
+        require-prior-idle-ms = <350>;
+    };
 };
 
+&zip_aml {
+    /* AML中に操作してもレイヤーが解除されないキー（マウスボタンなどの位置）を指定 */
+    excluded-positions = <6 7 8 30 32 33 39>;
+};
+
+/* ==========================================================================
+   DEFAULT / AML レイヤー用のデフォルトListener
+   ========================================================================== */
 &tb_left_listener {
     status = "okay";
     device = <&tb_left>;
-
     input-processors =
-            <&sensor_rotation_left>,
-            <&zip_x_scaler 0 1>,
-            <&zip_y_scaler 1 15>,
-            <&zip_xy_to_scroll_mapper>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
-    };
-
-/ {
-  /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
-    compatible = "zmk,input-processor-temp-layer";
-    #input-processor-cells = <2>;
-    require-prior-idle-ms = <350>; /* キー押下後、何msオートマウスレイヤに入らないようにするか、誤爆防止 */
-  };
+        <&sensor_rotation_left>,
+        <&zip_aml 1 640>, // 動かしたらlayer_1へ移行 (640ms維持)
+        <&zip_xy_to_scroll_mapper>, // 左はデフォルト縦スクロール
+        <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>; 
 };
 
 &tb_right_listener {
     status = "okay";
-
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_temp_layer 3 5000>; /* オートマウスレイヤーの指定とトラボ操作及びマウスボタン押下後に滞留する時間 */
+        <&zip_aml 1 640>; // 右を動かしてもlayer_1へ移行 (デフォルトはカーソル移動)
 };
 
-&zip_temp_layer {
-    excluded-positions = <
-        6
-        7
-        8
-        30
-        32
-        33
-        39
-    >;
+/* ==========================================================================
+   LAYER 2 用の Listener (右トラックボール速度倍化)
+   ========================================================================== */
+/ {
+    tb_left_l2: tb_left_l2 {
+        compatible = "zmk,input-listener";
+        device = <&tb_left>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_to_scroll_mapper>, // 左は通常通り縦スクロール
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+
+    tb_right_l2: tb_right_l2 {
+        compatible = "zmk,input-listener";
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_speed_double 2 1>; // 右のカーソル速度を2倍に変更 (分子2, 分母1)
+    };
+};
+
+/* ==========================================================================
+   LAYER 3 用の Listener (左:横スクロール、右:自由スクロール)
+   ========================================================================== */
+/ {
+    tb_left_l3: tb_left_l3 {
+        compatible = "zmk,input-listener";
+        device = <&tb_left>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_to_scroll_mapper>,
+            /* Y軸（縦）を0倍にしてカットし、X軸（横）だけを有効化 */
+            <&zip_speed_double 1 1>,
+            <&zip_speed_double 0 1>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+    };
+
+    tb_right_l3: tb_right_l3 {
+        compatible = "zmk,input-listener";
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_xy_to_scroll_mapper>, // 右をスクロール化（自由スクロール）
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
 };
