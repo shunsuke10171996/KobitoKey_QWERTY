@@ -46,7 +46,7 @@
 };
 
 / {
-    /* 回転補正 */
+    /* 回転補正（通常カーソル移動用） */
     sensor_rotation_left: sensor-rotation-left {
         compatible = "zmk,input-processor-sensor-rotation";
         status = "okay";
@@ -61,6 +61,21 @@
         rotation-angle = <24>;
     };
 
+    /* ★新規追加：スクロールをフラットにするための逆回転プロセッサ */
+    unrotate_left: unrotate_left {
+        compatible = "zmk,input-processor-sensor-rotation";
+        status = "okay";
+        #input-processor-cells = <0>;
+        rotation-angle = <24>; /* 左の-24°を打ち消すために+24°回転 */
+    };
+
+    unrotate_right: unrotate_right {
+        compatible = "zmk,input-processor-sensor-rotation";
+        status = "okay";
+        #input-processor-cells = <0>;
+        rotation-angle = <(-24)>; /* 右の+24°を打ち消すために-24°回転 */
+    };
+
     /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
     zip_aml: zip_aml {
         compatible = "zmk,input-processor-temp-layer";
@@ -68,12 +83,20 @@
         require-prior-idle-ms = <350>;
     };
 
-    /* スクロール減速用スケーラー (1/2倍速にする) */
-    zip_scroll_scaler: zip_scroll_scaler {
+    /* 縦スクロール専用スケーラー */
+    scroll_v: scroll_v {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
         type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_HWHEEL INPUT_REL_WHEEL>; /* スクロール軸を対象に指定 */
+        codes = <INPUT_REL_WHEEL>;
+    };
+
+    /* 横スクロール専用スケーラー */
+    scroll_h: scroll_h {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_HWHEEL>;
     };
 };
 
@@ -91,21 +114,27 @@
     input-processors =
         <&sensor_rotation_left>,
         <&zip_aml 1 640>, 
+        <&unrotate_left>, /* ★変更点：スクロール変換の直前に逆回転を挟んでフラット化 */
         <&zip_xy_to_scroll_mapper>, 
         <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
         <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_scroll_scaler 1 2>; /* ★スクロール速度を半分にする */
+        /* デフォルト設定: 縦を1/4倍速にし、横を0倍（完全カット）にする */
+        <&scroll_v 1 4>,
+        <&scroll_h 0 1>;
 
-    /* レイヤー3のときは縦方向（Y）を0倍にして横スクロールのみにする */
+    /* レイヤー3：横スクロール */
     horiz_scroll {
         layers = <3>;
         input-processors =
             <&sensor_rotation_left>,
             <&zip_aml 1 640>,
+            <&unrotate_left>, /* ★変更点：スクロール変換の直前に逆回転を挟んでフラット化 */
             <&zip_xy_to_scroll_mapper>,
-            /* ★横スクロールが逆だったため、X_INVERT を外して方向を反転 */
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_scroll_scaler 1 2>; /* 横スクロールも速度を半分に */
+            /* レイヤー3左設定: 縦を0倍（カット）にし、横を1/4倍速にする */
+            <&scroll_v 0 1>,
+            <&scroll_h 1 4>;
     };
 };
 
@@ -127,16 +156,18 @@
             <&zip_xy_scaler 2 1>; /* 速度を2倍(2/1)にする */
     };
 
-    /* レイヤー3のときは自由スクロール化 */
+    /* レイヤー3のときは縦横自在な自由スクロール化 */
     free_scroll {
         layers = <3>;
         input-processors =
             <&sensor_rotation_right>,
             <&zip_aml 1 640>,
+            <&unrotate_right>, /* ★変更点：スクロール変換の直前に逆回転を挟んでフラット化 */
             <&zip_xy_to_scroll_mapper>,
-            /* ★修正：スクロール化された後のイベントなので、scroll_transformを適用 */
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_scroll_scaler 1 2>; /* 右の自由スクロールも速度を半分にする */
+            /* 右自由スクロール設定: 縦横ともに1/4倍速に落とす */
+            <&scroll_v 1 4>,
+            <&scroll_h 1 4>;
     };
 };
