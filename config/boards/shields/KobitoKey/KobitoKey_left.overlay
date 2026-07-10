@@ -61,11 +61,12 @@
         rotation-angle = <24>;
     };
 
-    /* 倍速用スケーラー (レイヤー2用) */
+    /* 倍速用スケーラー (レイヤー2・3用) */
     zip_speed_double: zip_speed_double {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
-        type = <INPUT_EV_REL>; /* ★必須プロパティを追加 */
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_X INPUT_REL_Y>; /* ★不足していた必須プロパティを追加 */
     };
 
     /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
@@ -77,8 +78,8 @@
 };
 
 &zip_aml {
-    /* AML中に操作してもレイヤーが解除されないキー（マウスボタンなどの位置）を指定 */
-    excluded-positions = <6 7 8 30 32 33 39>;
+    /* 現在のlayer_1のクリックボタンの位置（16, 17, 18）を除外指定して守る */
+    excluded-positions = <16 17 18>;
 };
 
 /* ==========================================================================
