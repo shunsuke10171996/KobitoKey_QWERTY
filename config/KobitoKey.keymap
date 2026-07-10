@@ -307,10 +307,10 @@
 
         layer_0 {
             bindings = <
-&kp Q             &kp W         &kp E              &kp R                 &kp T                  &kp Y                  &kp U                 &kp I                 &kp O                &kp P
-&kp A             &kp S         &kp D              &kp F                 &kp G                  &kp H                  &kp J                 &kp K                 &kp L                &mod_morph_minus_underscore
-&kp Z             &kp X         &kp C              &kp V                 &kp B                  &kp N                  &kp M                 &mod_morph_exclamation &mod_morph_question &kp F10
-&mt LEFT_ALT TAB  &kp LEFT_WIN  &lt 2 INT_MUHENKAN &mt LEFT_SHIFT SPACE  &macro_mac_soon        &mo 5                  &mt RIGHT_SHIFT SPACE &lt 3 INT_HENKAN      &lt 3 K_APPLICATION  &mt RIGHT_CONTROL TAB
+&kp Q             &kp W         &kp E            &kp R               &kp T                         &kp Y                  &kp U             &kp I                   &kp O                &kp P
+&kp A             &kp S         &kp D            &kp F               &kp G                         &kp H                  &kp J             &kp K                   &kp L                &mod_morph_minus_underscore
+&kp Z             &kp X         &kp C            &kp V               &kp B                         &kp N                  &kp M             &mod_morph_exclamation  &mod_morph_question  &kp F10
+&mt LEFT_ALT TAB  &kp LEFT_WIN  &macro_mac_soon  &lt 2 INT_MUHENKAN  &mt LEFT_SHIFT SPACE          &mt RIGHT_SHIFT SPACE  &lt 3 INT_HENKAN  &mo 5                   &lt 3 K_APPLICATION  &mt RIGHT_CONTROL TAB
             >;
         };
 
@@ -334,10 +334,10 @@
 
         layer_3 {
             bindings = <
-&kp JP_PLUS              &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp JP_ASTRK                   &kp CAPSLOCK  &mkp MB1        &mmv MOVE_UP    &mkp MB2         &kp PAUSE_BREAK
-&tap_dance_minus_equal  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &tap_dance_slash_percent       &mkp MB5      &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &msc SCRL_UP
-&kp NUMBER_0            &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &tap_dance_period_comma         &mkp MB4      &mkp MB3        &msc SCRL_LEFT  &msc SCRL_RIGHT  &msc SCRL_DOWN
-&trans                  &trans        &trans        &trans        &trans                         &trans        &trans          &trans          &trans           &trans
+&kp JP_PLUS             &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp JP_ASTRK                      &kp CAPSLOCK  &mkp MB1        &mmv MOVE_UP    &mkp MB2         &kp PAUSE_BREAK
+&tap_dance_minus_equal  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &tap_dance_slash_percent          &mkp MB5      &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &msc SCRL_UP
+&kp NUMBER_0            &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &tap_dance_period_comma           &mkp MB4      &mkp MB3        &msc SCRL_LEFT  &msc SCRL_RIGHT  &msc SCRL_DOWN
+&trans                  &trans        &trans        &trans        &trans                            &trans        &trans          &trans          &trans           &trans
             >;
         };
 
@@ -346,16 +346,16 @@
 &kp LALT        &kp LESS_THAN                    &kp GREATER_THAN  &kp JP_TILDE  &kp F5          &kp F6  &kp JP_CARET              &kp JP_LPAR  &kp JP_RPAR  &kp DOLLAR
 &kp LCTRL       &tap_dance_exclamation_question  &kp JP_EQUAL      &kp JP_AT     &kp F7          &kp F8  &tap_dance_single_double  &kp JP_LBKT  &kp JP_RBKT  &kp JP_GRAVE
 &kp LEFT_SHIFT  &kp JP_AMPS                      &kp JP_PIPE       &kp HASH      &kp F9          &kp F12 &kp SLASH                 &kp JP_LBRC  &kp JP_RBRC  &kp JP_BSLH
-&trans          &trans                            &trans            &trans        &trans          &trans  &trans                    &trans       &trans       &trans
+&trans          &trans                           &trans            &trans        &trans          &trans  &trans                    &trans       &trans       &trans
             >;
         };
 
         layer_5 {
             bindings = <
-&kp Q   &kp W   &kp E   &kp R            &kp T                    &none         &none         &out OUT_BLE  &out OUT_USB  &bt BT_CLR_ALL
-&kp A   &kp S   &kp D   &macro_passhead  &kp G                    &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&kp Z   &kp X   &kp C   &kp V            &kp B                    &none         &none         &bt BT_PRV    &bt BT_NXT    &bt BT_CLR
-&trans  &trans  &trans  &mt LCTRL TAB    &trans                   &none         &none         &none         &none         &none
+&kp Q   &kp W   &kp E   &kp R            &kp T          &none         &none         &out OUT_BLE  &out OUT_USB  &bt BT_CLR_ALL
+&kp A   &kp S   &kp D   &macro_passhead  &kp G          &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+&kp Z   &kp X   &kp C   &kp V            &kp B          &none         &none         &bt BT_PRV    &bt BT_NXT    &bt BT_CLR
+&trans  &trans  &trans  &mt LCTRL TAB    &trans         &none         &none         &none         &none         &none
             >;
         };
     };
