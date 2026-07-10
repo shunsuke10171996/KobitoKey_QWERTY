@@ -37,7 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <600>; /* ★改善策：左センサーの物理感度を 200 ➔ 600 に引き上げ */
+        cpi = <600>; 
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
@@ -130,8 +130,7 @@
             <&zip_aml 1 640>,
             <&unrotate_left>, 
             <&zip_xy_to_scroll_mapper>,
-            /* ★修正：横スクロールを逆にするため INPUT_TRANSFORM_X_INVERT を再追加 */
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            /* ★修正：反転（X_INVERT）を削除し、Y方向の反転のみ残して左右の向きを直感的に修正 */
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             /* レイヤー3左設定: 縦を0倍（カット）にし、横を1/4倍速にする */
             <&scroll_v 0 1>,
