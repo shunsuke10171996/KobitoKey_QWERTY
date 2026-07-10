@@ -58,56 +58,6 @@
 
 &caps_word { continue-list = <UNDERSCORE BACKSPACE DELETE JP_UNDER>; };
 
-/* ==========================================================================
-   左右共通で参照されるカスタムリスナーの定義
-   ========================================================================== */
-/ {
-    /* LAYER 2 用リスナー (速度倍化) */
-    tb_left_l2: tb_left_l2 {
-        compatible = "zmk,input-listener";
-        device = <&tb_left>;
-        layers = <2>; /* ★正しい構文: レイヤーの指定はここで行う */
-        input-processors =
-            <&sensor_rotation_left>,
-            <&zip_xy_to_scroll_mapper>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
-
-    tb_right_l2: tb_right_l2 {
-        compatible = "zmk,input-listener";
-        device = <&tb_right_split>;
-        layers = <2>; /* ★正しい構文: レイヤーの指定はここで行う */
-        input-processors =
-            <&sensor_rotation_right>,
-            <&zip_speed_double 2 1>; 
-    };
-
-    /* LAYER 3 用リスナー (左:横スクロール、右:自由スクロール) */
-    tb_left_l3: tb_left_l3 {
-        compatible = "zmk,input-listener";
-        device = <&tb_left>;
-        layers = <3>; /* ★正しい構文: レイヤーの指定はここで行う */
-        input-processors =
-            <&sensor_rotation_left>,
-            <&zip_xy_to_scroll_mapper>,
-            <&zip_speed_double 1 1>,
-            <&zip_speed_double 0 1>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
-    };
-
-    tb_right_l3: tb_right_l3 {
-        compatible = "zmk,input-listener";
-        device = <&tb_right_split>;
-        layers = <3>; /* ★正しい構文: レイヤーの指定はここで行う */
-        input-processors =
-            <&sensor_rotation_right>,
-            <&zip_xy_to_scroll_mapper>, 
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
-};
-
 / {
     /* 40キー（横10列）のマトリックスに合わせてkey-positionsを定義 */
     combos {
@@ -374,7 +324,6 @@
         };
 
         layer_2 {
-            /* ★ ib-listeners を削除し、元の綺麗な形に戻しました */
             bindings = <
 &kp F4            &kp LC(W)  &kp ESCAPE  &kp ENTER  &tap_dance_f1_f11          &kp LG(PRINTSCREEN)  &kp HOME        &kp UP_ARROW    &kp END        &kp PRINTSCREEN
 &kp LC(A)         &kp LC(S)  &kp DELETE  &kp LC(F)  &tap_dance_f2_f3           &kp BACKSPACE        &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW &kp DELETE
@@ -384,7 +333,6 @@
         };
 
         layer_3 {
-            /* ★ ib-listeners を削除し、元の綺麗な形に戻しました */
             bindings = <
 &kp JP_PLUS              &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp JP_ASTRK                   &kp CAPSLOCK  &mkp MB1        &mmv MOVE_UP    &mkp MB2         &kp PAUSE_BREAK
 &tap_dance_minus_equal  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &tap_dance_slash_percent       &mkp MB5      &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &msc SCRL_UP
