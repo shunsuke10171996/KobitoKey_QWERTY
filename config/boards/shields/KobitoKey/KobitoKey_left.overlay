@@ -37,7 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <600>; 
+        cpi = <400>; 
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
@@ -130,7 +130,6 @@
             <&zip_aml 1 640>,
             <&unrotate_left>, 
             <&zip_xy_to_scroll_mapper>,
-            /* ★修正：反転（X_INVERT）を削除し、Y方向の反転のみ残して左右の向きを直感的に修正 */
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             /* レイヤー3左設定: 縦を0倍（カット）にし、横を1/4倍速にする */
             <&scroll_v 0 1>,
@@ -164,7 +163,7 @@
             <&zip_aml 1 640>,
             <&unrotate_right>, 
             <&zip_xy_to_scroll_mapper>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            /* ★修正：右自由スクロールの横も逆だったため、X_INVERT を削除して Y 反転のみ適用 */
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             /* 右自由スクロール設定: 縦横ともに1/4倍速に落とす */
             <&scroll_v 1 4>,
