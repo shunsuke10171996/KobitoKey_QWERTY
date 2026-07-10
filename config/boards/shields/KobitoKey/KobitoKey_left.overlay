@@ -65,6 +65,7 @@
     zip_speed_double: zip_speed_double {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>; /* ★必須プロパティを追加 */
     };
 
     /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
@@ -103,7 +104,7 @@
 
 /* ==========================================================================
    LAYER 2 用の Listener (右トラックボール速度倍化)
-   ========================================================================== */
+   ========================================================================= */
 / {
     tb_left_l2: tb_left_l2 {
         compatible = "zmk,input-listener";
