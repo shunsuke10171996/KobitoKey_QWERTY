@@ -75,7 +75,7 @@
 };
 
 /* ==========================================================================
-   DEFAULT / AML レイヤー用のデフォルトListener
+   左トラックボール用：デフォルトは縦スクロール / レイヤー3で横スクロール
    ========================================================================== */
 &tb_left_listener {
     status = "okay";
@@ -83,20 +83,49 @@
     input-processors =
         <&sensor_rotation_left>,
         <&zip_aml 1 640>, 
-        /* レイヤー3のときは横スクロール（縦方向を0倍にカット）、それ以外は通常の縦横スクロール */
-        <&zip_xy_scaler_with_layers 3 1 1 0 1>,
         <&zip_xy_to_scroll_mapper>, 
         <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
-        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>; 
+        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* レイヤー3のときは縦方向（Y）を0倍にして横スクロールのみにする */
+    horiz_scroll {
+        layers = <3>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_aml 1 640>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            /* Y方向のスクロールを0倍にしてカット */
+            <&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)>;
+    };
 };
 
+/* ==========================================================================
+   右トラックボール用：デフォルトカーソル / レイヤー2で速度2倍 / レイヤー3で自由スクロール
+   ========================================================================== */
 &tb_right_listener {
     status = "okay";
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_aml 1 640>,
-        /* レイヤー2のときは速度倍化（2倍）、それ以外は通常（1倍） */
-        <&zip_xy_scaler_with_layers 2 2 1 2 1>,
-        /* レイヤー3のときはスクロール、それ以外は通常のカーソル移動 */
-        <&zip_xy_to_scroll_mapper_with_layers 3>;
+        <&zip_aml 1 640>;
+
+    /* レイヤー2のときはカーソル速度を倍化 */
+    fast_cursor {
+        layers = <2>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_aml 1 640>,
+            <&zip_xy_scaler 2 1>; /* 速度を2倍(2/1)にする */
+    };
+
+    /* レイヤー3のときは自由スクロール化 */
+    free_scroll {
+        layers = <3>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_aml 1 640>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
 };
