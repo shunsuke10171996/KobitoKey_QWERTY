@@ -66,7 +66,7 @@
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
         type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_X INPUT_REL_Y>; /* ★不足していた必須プロパティを追加 */
+        codes = <INPUT_REL_X INPUT_REL_Y>;
     };
 
     /* AML (Auto Mouse Layer) 定義 (ターゲット: layer_1, 維持時間: 640ms) */
@@ -90,8 +90,8 @@
     device = <&tb_left>;
     input-processors =
         <&sensor_rotation_left>,
-        <&zip_aml 1 640>, // 動かしたらlayer_1へ移行 (640ms維持)
-        <&zip_xy_to_scroll_mapper>, // 左はデフォルト縦スクロール
+        <&zip_aml 1 640>, 
+        <&zip_xy_to_scroll_mapper>, 
         <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
         <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>; 
 };
@@ -100,7 +100,7 @@
     status = "okay";
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_aml 1 640>; // 右を動かしてもlayer_1へ移行 (デフォルトはカーソル移動)
+        <&zip_aml 1 640>; 
 };
 
 /* ==========================================================================
@@ -109,19 +109,20 @@
 / {
     tb_left_l2: tb_left_l2 {
         compatible = "zmk,input-listener";
-        device = <&tb_left>;
+        device = <&tb_left>; /* 必須プロパティ */
         input-processors =
             <&sensor_rotation_left>,
-            <&zip_xy_to_scroll_mapper>, // 左は通常通り縦スクロール
+            <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
     tb_right_l2: tb_right_l2 {
         compatible = "zmk,input-listener";
+        device = <&tb_right_split>; /* ★エラー原因：右側デバイスの明示を追加 */
         input-processors =
             <&sensor_rotation_right>,
-            <&zip_speed_double 2 1>; // 右のカーソル速度を2倍に変更 (分子2, 分母1)
+            <&zip_speed_double 2 1>; 
     };
 };
 
@@ -131,11 +132,10 @@
 / {
     tb_left_l3: tb_left_l3 {
         compatible = "zmk,input-listener";
-        device = <&tb_left>;
+        device = <&tb_left>; /* 必須プロパティ */
         input-processors =
             <&sensor_rotation_left>,
             <&zip_xy_to_scroll_mapper>,
-            /* Y軸（縦）を0倍にしてカットし、X軸（横）だけを有効化 */
             <&zip_speed_double 1 1>,
             <&zip_speed_double 0 1>,
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
@@ -143,9 +143,10 @@
 
     tb_right_l3: tb_right_l3 {
         compatible = "zmk,input-listener";
+        device = <&tb_right_split>; /* ★エラー原因：右側デバイスの明示を追加 */
         input-processors =
             <&sensor_rotation_right>,
-            <&zip_xy_to_scroll_mapper>, // 右をスクロール化（自由スクロール）
+            <&zip_xy_to_scroll_mapper>, 
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
     };
