@@ -61,16 +61,16 @@
 / {
     /* 40キー（横10列）のマトリックスに合わせてkey-positionsを定義 */
     combos {
+        compatible = "zmk,combos";
+
         combo_caps_word {
             bindings = <&caps_word>;
             key-positions = <11 12>;
-            fast-trigger;
         };
 
         combo_key_repeat {
             bindings = <&key_repeat>;
-            key-positions = <17 18>; 
-            fast-trigger;
+            key-positions = <17 18>;
         };
     };
 
