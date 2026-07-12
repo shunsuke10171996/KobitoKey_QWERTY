@@ -185,13 +185,6 @@
             label = "MACRO_ALT_SPC_S";
         };
 
-        macro_passhead: macro_passhead {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&none &kp LS(T) &kp JP_AT &kp K &kp N3>;
-            label = "MACRO_PASSHEAD";
-        };
-
         macro_mac_soon: macro_mac_soon {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -271,8 +264,8 @@
         layer_7 {
             bindings = <
 &none  &none  &none  &none            &none          &none         &none         &out OUT_BLE  &out OUT_USB  &bt BT_CLR_ALL
-&none  &none  &none  &macro_passhead  &none          &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&none  &none  &none  &macro_mac_soon  &none          &none         &none         &bt BT_PRV    &bt BT_NXT    &bt BT_CLR
+&none  &none  &none  &macro_mac_soon  &none          &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+&none  &none  &none  &none            &none          &none         &none         &bt BT_PRV    &bt BT_NXT    &bt BT_CLR
 &trans &trans &trans &trans           &trans         &trans        &trans        &trans        &trans        &trans
             >;
         };
